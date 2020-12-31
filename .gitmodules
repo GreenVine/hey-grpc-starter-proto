@@ -1,0 +1,6 @@
+[submodule "proto_ext/third_party/googleapis"]
+	path = proto_ext/third_party/googleapis
+	url = https://github.com/googleapis/googleapis.git
+[submodule "proto_ext/third_party/validator"]
+	path = proto_ext/third_party/validator
+	url = https://github.com/envoyproxy/protoc-gen-validate.git
