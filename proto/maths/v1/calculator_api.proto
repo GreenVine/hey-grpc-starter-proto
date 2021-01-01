@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package greenvine.grpcstarter.maths.calculator.v1;
+
+option csharp_namespace = "Greenvine.Grpcstarter.Maths.Calculator.V1";
+option go_package = "github.com/greenvine/grpc-starter-protogen/gen/go;v1pb";
+option java_multiple_files = true;
+option java_outer_classname = "CalculatorApiProto";
+option java_package = "com.greenvine.grpcstarter.maths.calculator.v1";
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+// CalculatorAPI provides maths calculation service.
+service CalculatorAPI {
+  // DivideIntegers computes integer division result.
+  //
+  // Takes dividend and divisor in DivideIntegersRequest body and returns an integer
+  rpc DivideIntegers(DivideIntegersRequest) returns (DivideIntegersResponse) {
+    option (google.api.http) = {
+      post: "/v1/maths/calculator:divide"
+      body: "*"
+    };
+  }
+}
+
+message DivideIntegersRequest {
+  int64 dividend = 1;
+  int64 divisor = 2 [
+    (validate.rules).int64 = {
+      not_in: [
+        0
+      ]
+    }
+  ];
+}
+
+message DivideIntegersResponse {
+  int64 quotient = 1;
+}
