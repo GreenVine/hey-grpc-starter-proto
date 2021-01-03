@@ -1,0 +1,7 @@
+prototool.yaml
+third_party/googleapis/google/api/annotations.proto
+third_party/googleapis/google/api/http.proto
+third_party/googleapis/google/rpc/code.proto
+third_party/googleapis/google/rpc/error_details.proto
+third_party/googleapis/google/rpc/status.proto
+third_party/validator/validate/validate.proto

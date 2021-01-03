@@ -1,0 +1,22 @@
+protoc:
+  version: 3.11.0
+
+  # Additional paths to include with -I to protoc.
+  includes:
+    - third_party/googleapis
+    - third_party/validator
+
+  # Setting this will ignore unused imports.
+  allow_unused_imports: true
+
+# Code generation directives
+generate:
+  # List of plugins
+  plugins:
+    - name: js
+      flags: binary,import_style=commonjs
+      output: ../proto_gen/js
+
+    - name: ts
+      flags: service=grpc-web
+      output: ../proto_gen/ts

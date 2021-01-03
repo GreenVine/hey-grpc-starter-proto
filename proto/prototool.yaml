@@ -1,0 +1,86 @@
+protoc:
+  version: 3.11.0
+
+  # Additional paths to include with -I to protoc.
+  includes:
+    - ../proto_ext/third_party/googleapis
+    - ../proto_ext/third_party/validator
+
+# Code linting
+lint:
+  group: uber2
+
+  rules:
+    # Linters to enable additionally
+    add:
+      - RPCS_HAVE_COMMENTS
+
+    # Linters to disable
+    remove:
+      - FILE_OPTIONS_REQUIRE_OBJC_CLASS_PREFIX
+      - FILE_OPTIONS_REQUIRE_PHP_NAMESPACE
+      - FILE_OPTIONS_EQUAL_GO_PACKAGE_PB_SUFFIX
+      - FILE_OPTIONS_GO_PACKAGE_NOT_LONG_FORM
+      - FILE_OPTIONS_EQUAL_GO_PACKAGE_V2_SUFFIX
+      - REQUEST_RESPONSE_NAMES_MATCH_RPC
+      - REQUEST_RESPONSE_TYPES_UNIQUE
+
+    # Enforce the prefix for Java package
+    # java_package_prefix: com.
+
+# Breaking change detection
+break:
+  # Include beta packages in breaking change detection.
+  include_beta: false
+
+  # Allow stable packages to depend on beta packages.
+  allow_beta_deps: true
+
+# Code generation directives
+generate:
+  go_options:
+    # The base import path
+    import_path: github.com/greenvine/grpc-starter-protogen/gen/go
+
+    # Extra modifiers to include with Mfile=package
+    extra_modifiers:
+      google/api/annotations.proto: google.golang.org/genproto/googleapis/api/annotations
+      google/api/http.proto: google.golang.org/genproto/googleapis/api/annotations
+
+  # List of plugins
+  plugins:
+    - name: descriptor_set
+      file_suffix: pb
+      include_imports: true
+      include_source_info: true
+      output: ../proto_gen/pb
+
+    - name: go
+      type: go
+      flags: plugins=grpc
+      output: ../proto_gen/go
+
+    - name: grpc-gateway
+      type: go
+      output: ../proto_gen/go
+
+    - name: validate
+      type: go
+      flags: lang=go
+      output: ../proto_gen/go
+
+    - name: openapiv2
+      flags: allow_merge=true
+      output: ../proto_gen/openapi
+
+    - name: js
+      flags: binary,import_style=commonjs
+      output: ../proto_gen/js
+
+    - name: ts
+      flags: service=grpc-web
+      output: ../proto_gen/ts
+
+    - name: java
+      file_suffix: jar
+      output: ../proto_gen/java
