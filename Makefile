@@ -21,5 +21,5 @@ clean-proto:
 
 .PHONY: clean-docker
 clean-docker:
-		-docker rmi -f $(docker images -aq heyproto-node-builder:local-build)
-		-docker rmi -f $(docker images -aq heyproto-base:local-build)
+		-docker rmi -f $(docker images -aq heygrpc-node-builder:local-build)
+		-docker rmi -f $(docker images -aq heygrpc-base:local-build)

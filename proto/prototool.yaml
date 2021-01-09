@@ -40,7 +40,7 @@ break:
 generate:
   go_options:
     # The base import path
-    import_path: github.com/greenvine/grpc-starter-protogen/gen/go
+    import_path: github.com/greenvine/hey-grpc-starter-protogen/gen/go
 
     # Extra modifiers to include with Mfile=package
     extra_modifiers:

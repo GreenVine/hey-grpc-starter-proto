@@ -10,13 +10,13 @@ if [ ! -d "${DOCKERFILE_DIR}" ]; then
   exit 1
 fi
 
-echo 'Building base image: heyproto-base...'
+echo 'Building base image: heygrpc-base...'
 docker build -f "${DOCKERFILE_DIR}/base.Dockerfile" \
-  -t heyproto-base:local-build \
+  -t heygrpc-base:local-build \
   "${DOCKERFILE_DIR}"
 
-echo 'Building Node.js builder: heyproto-node-builder...'
+echo 'Building Node.js builder: heygrpc-node-builder...'
 docker build -f "${DOCKERFILE_DIR}/node-builder.Dockerfile" \
-  --build-arg BASE_IMAGE=heyproto-base:local-build \
-  -t heyproto-node-builder:local-build \
+  --build-arg BASE_IMAGE=heygrpc-base:local-build \
+  -t heygrpc-node-builder:local-build \
   "${DOCKERFILE_DIR}"

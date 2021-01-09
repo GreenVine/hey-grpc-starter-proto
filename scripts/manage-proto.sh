@@ -11,7 +11,7 @@ PROTO_TMP_NAME='.proto_ext.tmp'
 PROTO_EXT_DIR="${PROJECT_ROOT}/${PROTO_EXT_NAME}"
 PROTO_EXT_ABS=$(readlink -mn "${PROTO_EXT_DIR}")
 PROTO_TMP_DIR="${PROJECT_ROOT}/${PROTO_TMP_NAME}"
-DOCKER_IMAGE=${3:-heyproto-node-builder:local-build}
+DOCKER_IMAGE=${3:-heygrpc-node-builder:local-build}
 
 if [ ! -d "${PROJECT_ROOT}" ]; then
   echo 'Project root folder does not exist.'

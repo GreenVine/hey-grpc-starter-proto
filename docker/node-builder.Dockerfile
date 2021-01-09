@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=heyproto-base:latest
+ARG BASE_IMAGE=heygrpc-base:latest
 ARG NODE_VERSION=14
 
 ### Base Image ###
