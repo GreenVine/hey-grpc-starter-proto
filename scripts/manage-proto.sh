@@ -11,7 +11,7 @@ PROTO_TMP_NAME='.proto_ext.tmp'
 PROTO_EXT_DIR="${PROJECT_ROOT}/${PROTO_EXT_NAME}"
 PROTO_EXT_ABS=$(readlink -mn "${PROTO_EXT_DIR}")
 PROTO_TMP_DIR="${PROJECT_ROOT}/${PROTO_TMP_NAME}"
-DOCKER_IMAGE=${3:-heygrpc-node-builder:local-build}
+DOCKER_IMAGE=${3:-hey-grpc-nodejs-builder:latest}
 
 if [ ! -d "${PROJECT_ROOT}" ]; then
   echo 'Project root folder does not exist.'
@@ -50,9 +50,9 @@ prepare_vendor_files() {
     # copy over file and folders, and abort on non-exist entry
     if [[ -d "${inc_abs_path}" ]]; then
       mkdir -p "${PROTO_TMP_DIR}/${inc}"
-      cp -rfp "${inc_abs_path}" $(dirname "${PROTO_TMP_DIR}/${inc}")
+      cp -rfp "${inc_abs_path}" "$(dirname "${PROTO_TMP_DIR}/${inc}")"
     elif [[ -f "${inc_abs_path}" ]]; then
-      mkdir -p $(dirname "${PROTO_TMP_DIR}/${inc}")
+      mkdir -p "$(dirname "${PROTO_TMP_DIR}/${inc}")"
       cp -rfp "${inc_abs_path}" "${PROTO_TMP_DIR}/${inc}"
     else
       echo "Included file/folder does not exist: ${inc}"
@@ -75,6 +75,13 @@ format_proto() {
     -v "${PROJECT_ROOT}:/workspace" \
     "${DOCKER_IMAGE}" \
     format -w "${PROTO_SRC_NAME}" --walk-timeout 10s
+}
+
+format_proto_with_header() {
+  docker run --rm \
+    -v "${PROJECT_ROOT}:/workspace" \
+    "${DOCKER_IMAGE}" \
+    format -fw "${PROTO_SRC_NAME}" --walk-timeout 10s
 }
 
 lint_proto() {
@@ -104,6 +111,11 @@ case $1 in
   echo 'Formatting Protobuf files...'
   format_proto
   ;;
+'full-format')
+  echo 'Formatting Protobuf files including headers...'
+  format_proto_with_header
+  >&2 echo "Warning: Fix 'go_package' manually to align with full Go import path style guide."
+  ;;
 'lint')
   echo 'Linting Protobuf files...'
   lint_proto
@@ -112,7 +124,7 @@ case $1 in
   cleanup
   ;;
 *)
-  echo "Unrecognised command '${command}'. Valid choices are: build, clean, format, lint"
+  echo "Unrecognised command '$1'. Valid choices are: build, clean, format, full-format, lint"
   exit 1
   ;;
 esac
