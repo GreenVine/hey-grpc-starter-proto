@@ -1,12 +1,14 @@
 syntax = "proto3";
 
-package greenvine.grpcstarter.maths.calculator.v1;
+package greenvine.heygrpc.maths.v1;
 
-option csharp_namespace = "Greenvine.Grpcstarter.Maths.Calculator.V1";
-option go_package = "github.com/greenvine/hey-grpc-starter-protogen/gen/go;v1pb";
+option csharp_namespace = "Greenvine.Heygrpc.Maths.V1";
+option go_package = "github.com/greenvine/hey-grpc-starter-protogen/gen/go/maths/v1;mathsv1pb";
 option java_multiple_files = true;
 option java_outer_classname = "CalculatorApiProto";
-option java_package = "com.greenvine.grpcstarter.maths.calculator.v1";
+option java_package = "com.greenvine.heygrpc.maths.v1";
+option objc_class_prefix = "GHM";
+option php_namespace = "Greenvine\\Heygrpc\\Maths\\V1";
 
 import "google/api/annotations.proto";
 import "validate/validate.proto";
