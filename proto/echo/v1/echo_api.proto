@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package greenvine.heygrpc.echo.v1;
+
+option csharp_namespace = "Greenvine.Heygrpc.Echo.V1";
+option go_package = "github.com/greenvine/hey-grpc-starter-protogen/gen/go/echo/v1;echov1pb";
+option java_multiple_files = true;
+option java_outer_classname = "EchoApiProto";
+option java_package = "com.greenvine.heygrpc.echo.v1";
+option objc_class_prefix = "GHE";
+option php_namespace = "Greenvine\\Heygrpc\\Echo\\V1";
+
+import "google/api/annotations.proto";
+
+// EchoAPI service returns back whatever it was sent to it.
+service EchoAPI {
+  // Send returns the message sent by the requester.
+  rpc Send(PingRequest) returns (PingResponse) {
+    option (google.api.http) = {
+      post: "/v1/echo/message"
+      body: "*"
+    };
+  }
+  // Subscribe opens a stream and returns the Ping message and an Unix timestamp every second.
+  rpc Subscribe(PingRequest) returns (stream PingResponse) {
+    option (google.api.http) = {
+      post: "/v1/echo/message:subscribe"
+      body: "*"
+    };
+  }
+}
+
+message PingRequest {
+  string message = 1;
+}
+
+message PingResponse {
+  string message = 1;
+  int64 timestamp = 2;
+}
