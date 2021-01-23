@@ -1,0 +1,57 @@
+name: protobuf
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*.*.*'
+  pull_request:
+
+env:
+  BUILDER_BASE_IMAGE: greenvine/hey-grpc-nodejs-builder:latest
+
+jobs:
+  lint_protobuf:
+    name: Lint Protobuf
+    runs-on: ubuntu-20.04
+    steps:
+      - id: checkout_repo
+        name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - id: lint_protobuf
+        name: Lint Protobuf
+        run: make lint DOCKER_IMAGE="${{ env.BUILDER_BASE_IMAGE }}"
+
+  build_protobuf:
+    name: Generate & Push Protobuf
+    runs-on: ubuntu-20.04
+    steps:
+      - id: checkout_repo
+        name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - id: get_commit_short_sha
+        name: Get commit short SHA
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - id: gen_protobuf
+        name: Generate Protobuf
+        run: make build DOCKER_IMAGE="${{ env.BUILDER_BASE_IMAGE }}"
+
+      - id: fix_protogen
+        name: Fix Protobuf permissions
+        run: sudo chown -R runner:docker proto_gen
+
+      - id: list_protogen
+        name: List generated Protobuf
+        run: |
+          ls -R proto_gen | awk '
+          /:$/&&f{s=$0;f=0}
+          /:$/&&!f{sub(/:$/,"");s=$0;f=1;next}
+          NF&&f{ print s"/"$0 }'
