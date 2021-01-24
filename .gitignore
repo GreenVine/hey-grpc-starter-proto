@@ -134,4 +134,5 @@ $RECYCLE.BIN/
 
 ### Project Specific Entries ###
 proto_gen/
+proto_gen_repo/
 .proto_ext.tmp/
