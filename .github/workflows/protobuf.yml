@@ -56,11 +56,14 @@ jobs:
         name: Generate Protobuf
         run: make build DOCKER_IMAGE="${{ env.BUILDER_BASE_IMAGE }}"
 
+      # Fix file permissions and go package path, then copy proto_gen to interface repository
       - id: copy_protogen
         name: Copy generated Protobuf
         run: |
           sudo chown -R runner:docker proto_gen
           rm -rf "${{ env.PROTOGEN_DIR }}/gen"
+          cp -rfp "proto_gen/go/github.com/${{ env.PROTOGEN_REPO }}/gen/go/." proto_gen/go
+          rm -rf proto_gen/go/github.com
           cp -rf proto_gen "${{ env.PROTOGEN_DIR }}/gen"
 
       - id: list_protogen
