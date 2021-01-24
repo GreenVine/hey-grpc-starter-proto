@@ -3,7 +3,7 @@ syntax = "proto3";
 package greenvine.heygrpc.echo.v1;
 
 option csharp_namespace = "Greenvine.Heygrpc.Echo.V1";
-option go_package = "github.com/greenvine/hey-grpc-starter-protogen/gen/go/echo/v1;echov1pb";
+option go_package = "github.com/greenvine/hey-grpc-starter-interface/gen/go/echo/v1;echov1pb";
 option java_multiple_files = true;
 option java_outer_classname = "EchoApiProto";
 option java_package = "com.greenvine.heygrpc.echo.v1";

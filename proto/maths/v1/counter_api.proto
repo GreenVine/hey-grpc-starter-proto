@@ -3,7 +3,7 @@ syntax = "proto3";
 package greenvine.heygrpc.maths.v1;
 
 option csharp_namespace = "Greenvine.Heygrpc.Maths.V1";
-option go_package = "github.com/greenvine/hey-grpc-starter-protogen/gen/go/maths/v1;mathsv1pb";
+option go_package = "github.com/greenvine/hey-grpc-starter-interface/gen/go/maths/v1;mathsv1pb";
 option java_multiple_files = true;
 option java_outer_classname = "CounterApiProto";
 option java_package = "com.greenvine.heygrpc.maths.v1";

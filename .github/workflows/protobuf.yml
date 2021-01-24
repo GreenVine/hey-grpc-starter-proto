@@ -30,7 +30,7 @@ jobs:
     name: Generate & Push Protobuf
     runs-on: ubuntu-20.04
     env:
-      PROTOGEN_REPO: greenvine/hey-grpc-starter-protogen
+      PROTOGEN_REPO: greenvine/hey-grpc-starter-interface
       PROTOGEN_DIR: proto_gen_repo
     steps:
       - id: checkout_proto_repo
