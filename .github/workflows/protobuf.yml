@@ -29,12 +29,24 @@ jobs:
   build_protobuf:
     name: Generate & Push Protobuf
     runs-on: ubuntu-20.04
+    env:
+      PROTOGEN_REPO: greenvine/hey-grpc-starter-protogen
+      PROTOGEN_DIR: proto_gen_repo
     steps:
-      - id: checkout_repo
-        name: Checkout repository
+      - id: checkout_proto_repo
+        name: Checkout Protobuf source repository
         uses: actions/checkout@v2
         with:
           submodules: true
+
+      - id: checkout_protogen_repo
+        name: Checkout Protobuf interface repository
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.PROTOGEN_REPO }}
+          ssh-key: ${{ secrets.PROTOGEN_REPO_SSH_KEY }}
+          ref: master
+          path: ${{ env.PROTOGEN_DIR }}
 
       - id: get_commit_short_sha
         name: Get commit short SHA
@@ -44,14 +56,18 @@ jobs:
         name: Generate Protobuf
         run: make build DOCKER_IMAGE="${{ env.BUILDER_BASE_IMAGE }}"
 
-      - id: fix_protogen
-        name: Fix Protobuf permissions
-        run: sudo chown -R runner:docker proto_gen
+      - id: copy_protogen
+        name: Copy generated Protobuf
+        run: |
+          sudo chown -R runner:docker proto_gen
+          rm -rf "${{ env.PROTOGEN_DIR }}/gen"
+          cp -rf proto_gen "${{ env.PROTOGEN_DIR }}/gen"
 
       - id: list_protogen
         name: List generated Protobuf
+        working-directory: ${{ env.PROTOGEN_DIR }}
         run: |
-          ls -R proto_gen | awk '
+          ls -R gen | awk '
           /:$/&&f{s=$0;f=0}
           /:$/&&!f{sub(/:$/,"");s=$0;f=1;next}
           NF&&f{ print s"/"$0 }'
