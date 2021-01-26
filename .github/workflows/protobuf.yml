@@ -29,6 +29,8 @@ jobs:
   build_protobuf:
     name: Generate & Push Protobuf
     runs-on: ubuntu-20.04
+    needs:
+      - lint_protobuf
     env:
       PROTOGEN_REPO: greenvine/hey-grpc-starter-interface
       PROTOGEN_DIR: proto_gen_repo
@@ -48,10 +50,6 @@ jobs:
           ref: master
           path: ${{ env.PROTOGEN_DIR }}
 
-      - id: get_commit_short_sha
-        name: Get commit short SHA
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
       - id: gen_protobuf
         name: Generate Protobuf
         run: make build DOCKER_IMAGE="${{ env.BUILDER_BASE_IMAGE }}"
@@ -69,8 +67,27 @@ jobs:
       - id: list_protogen
         name: List generated Protobuf
         working-directory: ${{ env.PROTOGEN_DIR }}
+        run: find gen -type f
+
+      - id: get_tag_name
+        name: Get current tag
         run: |
-          ls -R gen | awk '
-          /:$/&&f{s=$0;f=0}
-          /:$/&&!f{sub(/:$/,"");s=$0;f=1;next}
-          NF&&f{ print s"/"$0 }'
+          if [[ "${GITHUB_REF}" == 'refs/tags/'* ]]; then
+            echo ::set-output name=tag_name::${GITHUB_REF/refs\/tags\//}
+          else
+            echo ::set-output name=tag_name::''
+          fi
+
+      - id: push_protogen
+        name: Push to interface repository
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.event_name != 'pull_request' }} && steps.auto-commit-action.outputs.changes_detected == 'true'
+        with:
+          repository: ${{ env.PROTOGEN_DIR }}
+          commit_message: Protobuf sync from commit ${{ github.sha }}
+          file_pattern: gen/
+          commit_user_name: Protobuf Sync Bot
+          commit_user_email: noreply+pbsync@greenvine.dev
+          tagging_message: ${{ steps.get_tag_name.outputs.tag_name }}
+          push_options: '--force'
+          skip_dirty_check: true
