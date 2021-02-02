@@ -34,6 +34,8 @@ jobs:
     env:
       PROTOGEN_REPO: greenvine/hey-grpc-starter-interface
       PROTOGEN_DIR: proto_gen_repo
+      PROTO_SYNC_COMMITTER_NAME: Sync Bot
+      PROTO_SYNC_COMMITTER_EMAIL: actions@github.com
     steps:
       - id: checkout_proto_repo
         name: Checkout Protobuf source repository
@@ -84,10 +86,31 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         with:
           repository: ${{ env.PROTOGEN_DIR }}
-          commit_message: Protobuf sync from commit ${{ github.sha }}
+          commit_message: Sync from commit ${{ github.sha }}
           file_pattern: gen/
-          commit_user_name: Protobuf Sync Bot
-          commit_user_email: noreply+pbsync@greenvine.dev
+          commit_user_name: ${{ env.PROTO_SYNC_COMMITTER_NAME }}
+          commit_user_email: ${{ env.PROTO_SYNC_COMMITTER_EMAIL }}
           tagging_message: ${{ steps.get_tag_name.outputs.tag_name }}
           push_options: '--force'
           skip_dirty_check: false
+
+      - id: prepare_tag_protogen
+        name: Pre Tag Protobuf interface repository
+        uses: actions/checkout@v2
+        if: ${{ github.event_name != 'pull_request' && steps.get_tag_name.outputs.tag_name != '' }}
+        with:
+          repository: ${{ env.PROTOGEN_REPO }}
+          ssh-key: ${{ secrets.PROTOGEN_REPO_SSH_KEY }}
+          path: ${{ env.PROTOGEN_DIR }}
+
+      - id: tag_protogen
+        name: Tag Protobuf interface repository
+        env:
+          TAG_NAME: ${{ steps.get_tag_name.outputs.tag_name }}
+        if: ${{ github.event_name != 'pull_request' && steps.get_tag_name.outputs.tag_name != '' }}
+        run: |
+          cd "${PROTOGEN_DIR}"
+          git config --global user.email "${PROTO_SYNC_COMMITTER_EMAIL}"
+          git config --global user.name "${PROTO_SYNC_COMMITTER_NAME}"
+          git tag -af "${TAG_NAME}" -m "Sync from tag: ${TAG_NAME} (commit ${GITHUB_SHA})"
+          git push -f origin "${TAG_NAME}"
