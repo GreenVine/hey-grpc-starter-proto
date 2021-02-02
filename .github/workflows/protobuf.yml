@@ -90,7 +90,6 @@ jobs:
           file_pattern: gen/
           commit_user_name: ${{ env.PROTO_SYNC_COMMITTER_NAME }}
           commit_user_email: ${{ env.PROTO_SYNC_COMMITTER_EMAIL }}
-          tagging_message: ${{ steps.get_tag_name.outputs.tag_name }}
           push_options: '--force'
           skip_dirty_check: false
 
