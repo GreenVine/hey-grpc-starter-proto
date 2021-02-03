@@ -20,7 +20,7 @@ jobs:
         name: Checkout repository
         uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
 
       - id: lint_protobuf
         name: Lint Protobuf
@@ -41,7 +41,7 @@ jobs:
         name: Checkout Protobuf source repository
         uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
 
       - id: checkout_protogen_repo
         name: Checkout Protobuf interface repository
