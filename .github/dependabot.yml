@@ -7,7 +7,7 @@ updates:
     schedule:
       interval: daily
     commit-message:
-      prefix: '[Actions]'
+      prefix: deps(actions)
     labels:
       - dependabot
       - github-actions-deps
