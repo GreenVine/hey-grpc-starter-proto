@@ -83,7 +83,8 @@ jobs:
       - id: push_protogen
         name: Push to interface repository
         uses: stefanzweifel/git-auto-commit-action@v4
-        if: ${{ github.event_name != 'pull_request' }}
+        # push only if it is on master branch or a tagged commit
+        if: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || steps.get_tag_name.outputs.tag_name != '') }}
         with:
           repository: ${{ env.PROTOGEN_DIR }}
           commit_message: Sync from commit ${{ github.sha }}
